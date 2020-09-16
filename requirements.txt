@@ -1,0 +1,2 @@
+flask==1.1.2
+git+https://github.com/eryktr/xmarie-vm.git@1.0.0
