@@ -1,8 +1,10 @@
+import http
+from http import HTTPStatus
+
 from flask import Flask, request, jsonify
-from xmarievm.parsing import parser
-from xmarievm.runtime.streams.input_stream import BufferedInputStream
-from xmarievm.runtime.streams.output_stream import OutputStream
-from xmarievm.runtime.vm import MarieVm
+from xmarievm import api
+
+import serializer
 
 app = Flask(__name__)
 
@@ -15,8 +17,11 @@ def run():
     if request.method != 'POST':
         raise ValueError('Invalid request type')
     code = request.json.get('code')
-    vm = MarieVm(memory=[0] * 1024, input_stream=BufferedInputStream(''), output_stream=OutputStream(), stack=[])
-    print(code)
-    prog = parser.parse(code)
-    vm.execute(prog)
-    return jsonify(isError=False, message='Success', statusCode=200, AC=vm.AC)
+    debug = request.json.get('debug')
+    try:
+        snapshots = api.run(code, debug=debug)
+    except Exception as err:
+        return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
+    snapshots_dicts = [serializer.serialize_snashot(ss) for ss in snapshots]
+    print(snapshots)
+    return jsonify(statusCode=200, snapshots=snapshots_dicts)
