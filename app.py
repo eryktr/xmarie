@@ -2,11 +2,13 @@ import http
 from http import HTTPStatus
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from xmarievm import api
 
 import serializer
 
 app = Flask(__name__)
+cors = CORS(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
