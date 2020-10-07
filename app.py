@@ -18,9 +18,12 @@ if __name__ == '__main__':
 def run():
     if request.method != 'POST':
         raise ValueError('Invalid request type')
-    code = request.json.get('code')
-    debug = request.json.get('debug')
-    input_ = request.json.get('input')
+    req = request.json
+    code = req.get('code')
+    debug = req.get('debug')
+    input_ = req.get('input')
+    breakpoints = req.get('breakpoints')
+    print(breakpoints)
     try:
         snapshots = api.run(code, debug=debug, input_=input_)
     except Exception as err:
