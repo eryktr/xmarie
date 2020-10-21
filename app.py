@@ -1,20 +1,20 @@
 import http
-import re
-from dataclasses import dataclass
 from http import HTTPStatus
-from typing import List
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from xmarievm import api
 
 import serializer
+from vm_manager import VmManager
 
 app = Flask(__name__)
 cors = CORS(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+vm_mgr = VmManager()
 
 
 @app.route('/run', methods=['POST'])
@@ -25,7 +25,11 @@ def run():
     code = req.get('code')
     debug = req.get('debug')
     input_ = req.get('input')
+    token = req.get('token')
+    action = req.get('action')
     breakpoints = req.get('breakpoints')
+    print(token)
+    print(action)
     try:
         snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
     except Exception as err:
