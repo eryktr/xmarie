@@ -33,8 +33,11 @@ def run():
     try:
         if action == actions.DEBUG:
             hit = vm_mgr.debug(token, code, input_, breakpoints)
-            snapshot = hit.snapshot
-            return jsonify(statusCode=http.HTTPStatus.OK, snapshot=serializer.serialize_snashot(snapshot))
+            return jsonify(
+                statusCode=http.HTTPStatus.OK,
+                snapshot=serializer.serialize_snashot(hit.snapshot),
+                breakpoint=serializer.serialize_breakpoint(hit.breakpoint)
+            )
         snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
     except Exception as err:
         return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
