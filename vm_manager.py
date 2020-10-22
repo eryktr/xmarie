@@ -9,6 +9,9 @@ from xmarievm.runtime.vm import MarieVm
 class VmManager:
     vms: Dict[str, MarieVm]
 
+    def __init__(self):
+        self.vms = {}
+
     def has_client(self, token: str):
         return token in self.vms
 
@@ -27,9 +30,10 @@ class VmManager:
         api.run(code, debug=False, input_=input_)
 
     def debug(self, token: str, code: str, input_: str, breakpoints: List[int]) -> BreakpointHit:
+        # TODO Implement input handling
         self.register_client(token)
         program = api.parse_code(code)
-        parsed_breakpoints = api.parse_breakpoints(breakpoints, code)
+        parsed_breakpoints = api.parse_breakpoints(code, breakpoints)
         vm = self.vms[token]
         vm.setup_debug(program, parsed_breakpoints)
         return vm.hit_breakpoint()

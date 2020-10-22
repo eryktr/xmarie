@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from xmarievm import api
 
+import actions
 import serializer
 from vm_manager import VmManager
 
@@ -28,9 +29,12 @@ def run():
     token = req.get('token')
     action = req.get('action')
     breakpoints = req.get('breakpoints')
-    print(token)
-    print(action)
+
     try:
+        if action == actions.DEBUG:
+            hit = vm_mgr.debug(token, code, input_, breakpoints)
+            snapshot = hit.snapshot
+            return jsonify(statusCode=http.HTTPStatus.OK, snapshot=serializer.serialize_snashot(snapshot))
         snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
     except Exception as err:
         return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
