@@ -1,5 +1,6 @@
 from typing import Dict
 
+from xmarievm import api
 from xmarievm.runtime.vm import MarieVm
 
 
@@ -19,3 +20,11 @@ class VmManager:
 
     def hit_breakpoint(self, token):
         return self.vms[token].hit_breakpoint()
+
+    def run(self, code: str, input_: str):
+        api.run(code, debug=False, input_=input_)
+
+    def debug(self, token: str, code: str, input_: str):
+        self.register_client(token)
+        program = api.parse(code)
+        self.vms[token].setup_debug()
