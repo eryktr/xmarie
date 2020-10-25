@@ -1,6 +1,7 @@
 from typing import Dict, List, Optional
 
 from xmarievm import api
+from xmarievm.api import get_line_array
 from xmarievm.breakpoints import BreakpointHit
 from xmarievm.runtime.snapshot_maker import Snapshot
 from xmarievm.runtime.vm import MarieVm
@@ -35,7 +36,8 @@ class VmManager:
         program = api.parse_code(code)
         parsed_breakpoints = api.parse_breakpoints(code, breakpoints)
         vm = self.vms[token]
-        vm.setup_debug(program, parsed_breakpoints)
+        line_array = get_line_array(code)
+        vm.setup_debug(program, parsed_breakpoints, line_array)
         return vm.hit_breakpoint()
 
     def continue_debug(self, token: str) -> Optional[BreakpointHit]:
