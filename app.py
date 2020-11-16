@@ -51,7 +51,17 @@ def run():
                 statusCode=http.HTTPStatus.OK,
                 breakpointHit=False,
             )
+        if action == actions.STEP:
+            hit = vm_mgr.step(token)
+            return jsonify(
+                statusCode=http.HTTPStatus.OK,
+                current_lineno=hit.current_lineno,
+                original_lineno=hit.original_lineno,
+                snapshot=hit.snapshot,
+            )
         snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
+
+
     except Exception as err:
         return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
     snapshots_dicts = [serializer.serialize_snashot(ss) for ss in snapshots]

@@ -28,6 +28,7 @@ class VmManager:
         return self.vms[token].hit_breakpoint()
 
     def run(self, code: str, input_: str):
+        print("run")
         api.run(code, debug=False, input_=input_)
 
     def debug(self, token: str, code: str, input_: str, breakpoints: List[int]) -> BreakpointHit:
