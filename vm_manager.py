@@ -21,8 +21,8 @@ class VmManager:
         vm.max_num_of_executed_instrs = max_num_calls
         self.vms[token] = vm
 
-    def step(self, token):
-        return self.vms[token].step()
+    def debugstep(self, token):
+        return self.vms[token].debugstep()
 
     def hit_breakpoint(self, token):
         return self.vms[token].hit_breakpoint()
@@ -43,4 +43,5 @@ class VmManager:
 
     def continue_debug(self, token: str) -> Optional[BreakpointHit]:
         vm = self.vms[token]
+        vm.step()
         return vm.hit_breakpoint()

@@ -52,14 +52,15 @@ def run():
                 breakpointHit=False,
             )
         if action == actions.STEP:
-            hit = vm_mgr.step(token)
+            hit = vm_mgr.debugstep(token)
             return jsonify(
                 statusCode=http.HTTPStatus.OK,
                 current_lineno=hit.current_lineno,
                 original_lineno=hit.original_lineno,
-                snapshot=hit.snapshot,
+                snapshot=serializer.serialize_snashot(hit.snapshot),
             )
-        snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
+        else:
+            snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
 
 
     except Exception as err:
