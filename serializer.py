@@ -8,6 +8,7 @@ from xmarievm.util import int_in_2c_to_hex, int_from_2c
 
 def serialize_snashot(snapshot: Snapshot):
     dec_fields = ('AC', 'X', 'Y', 'MAR', 'MBR', 'PC', 'IR')
+    snapshot.lineno_to_num_calls = dict(snapshot.lineno_to_num_calls)
     snapshot_dict = asdict(snapshot)
     snapshot_dict['output_stream'] = snapshot.output_stream.buf
     snapshot_dict['stack'] = [serialize_dec_num(n) for n in snapshot_dict['stack']]

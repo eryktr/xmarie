@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 from xmarievm import api
 from xmarievm.api import get_line_array
 from xmarievm.breakpoints import BreakpointHit
+from xmarievm.runtime import snapshot_maker
 from xmarievm.runtime.snapshot_maker import Snapshot
 from xmarievm.runtime.vm import MarieVm
 
@@ -27,9 +28,13 @@ class VmManager:
     def hit_breakpoint(self, token):
         return self.vms[token].hit_breakpoint()
 
-    def run(self, code: str, input_: str):
-        print("run")
-        api.run(code, debug=False, input_=input_)
+    def run(self, token, code: str, input_: str):
+        self.register_client(token)
+        program = api.parse_code(code)
+        line_array = get_line_array(code)
+        vm = self.vms[token]
+        vm.execute(program, line_array)
+        return snapshot_maker.make_snapshot(vm)
 
     def debug(self, token: str, code: str, input_: str, breakpoints: List[int]) -> BreakpointHit:
         # TODO Implement input handling

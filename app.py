@@ -60,10 +60,9 @@ def run():
                 snapshot=serializer.serialize_snashot(hit.snapshot),
             )
         else:
-            snapshots = api.run(code, debug=debug, input_=input_, breakpoints=breakpoints)
+            snapshot = vm_mgr.run(token, code, input_)
 
 
     except Exception as err:
         return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
-    snapshots_dicts = [serializer.serialize_snashot(ss) for ss in snapshots]
-    return jsonify(statusCode=http.HTTPStatus.OK, snapshots=snapshots_dicts)
+    return jsonify(statusCode=http.HTTPStatus.OK, snapshots=[serializer.serialize_snashot(snapshot)])
