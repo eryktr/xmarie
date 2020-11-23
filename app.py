@@ -52,16 +52,21 @@ def run():
                 breakpointHit=False,
             )
         if action == actions.STEP:
-            hit = vm_mgr.debugstep(token)
-            return jsonify(
-                statusCode=http.HTTPStatus.OK,
-                current_lineno=hit.current_lineno,
-                original_lineno=hit.original_lineno,
-                snapshot=serializer.serialize_snashot(hit.snapshot),
-            )
+            try:
+                hit = vm_mgr.debugstep(token)
+                return jsonify(
+                    status='hit',
+                    statusCode=http.HTTPStatus.OK,
+                    current_lineno=hit.current_lineno,
+                    original_lineno=hit.original_lineno,
+                    snapshot=serializer.serialize_snashot(hit.snapshot),
+                )
+            except RuntimeError:
+                return jsonify(
+                    status='terminated',
+                )
         else:
             snapshot = vm_mgr.run(token, code, input_)
-
 
     except Exception as err:
         return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
