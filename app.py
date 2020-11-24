@@ -4,6 +4,7 @@ from http import HTTPStatus
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from xmarievm import api
+from xmarievm.parsing.parser import ParsingError
 
 import actions
 import serializer
@@ -35,6 +36,7 @@ def run():
             hit = vm_mgr.debug(token, code, input_, breakpoints)
             return jsonify(
                 statusCode=http.HTTPStatus.OK,
+                status='ok',
                 snapshot=serializer.serialize_snashot(hit.snapshot),
                 breakpoint=serializer.serialize_breakpoint(hit.breakpoint)
             )
@@ -43,12 +45,14 @@ def run():
             if hit:
                 return jsonify(
                     statusCode=http.HTTPStatus.OK,
+                    status='ok',
                     breakpointHit=True,
                     snapshot=serializer.serialize_snashot(hit.snapshot),
                     breakpoint=serializer.serialize_breakpoint(hit.breakpoint),
                 )
             return jsonify(
                 statusCode=http.HTTPStatus.OK,
+                status='ok',
                 breakpointHit=False,
             )
         if action == actions.STEP:
@@ -68,6 +72,6 @@ def run():
         else:
             snapshot = vm_mgr.run(token, code, input_)
 
-    except Exception as err:
-        return jsonify(statusCode=HTTPStatus.INTERNAL_SERVER_ERROR, message=str(err))
+    except (ParsingError, SyntaxError) as err:
+        return jsonify(statusCode=HTTPStatus.BAD_REQUEST, status='parsingError', message=str(err))
     return jsonify(statusCode=http.HTTPStatus.OK, snapshots=[serializer.serialize_snashot(snapshot)])
