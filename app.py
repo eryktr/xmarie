@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from xmarievm import api
 from xmarievm.parsing.parser import ParsingError
+from xmarievm.runtime import snapshot_maker
 
 import actions
 import serializer
@@ -34,12 +35,18 @@ def run():
     try:
         if action == actions.DEBUG:
             hit = vm_mgr.debug(token, code, input_, breakpoints)
-            return jsonify(
-                statusCode=http.HTTPStatus.OK,
-                status='ok',
-                snapshot=serializer.serialize_snashot(hit.snapshot),
-                breakpoint=serializer.serialize_breakpoint(hit.breakpoint)
-            )
+            if hit:
+                return jsonify(
+                    statusCode=http.HTTPStatus.OK,
+                    snapshot=serializer.serialize_snashot(hit.snapshot),
+                    breakpoint=serializer.serialize_breakpoint(hit.breakpoint)
+                )
+            else:
+                return jsonify(
+                    statusCode=http.HTTPStatus.OK,
+                    status='terminated',
+                    snapshot=serializer.serialize_snashot(snapshot_maker.make_snapshot(vm_mgr.vms[token]))
+                )
         if action == actions.CONTINUE:
             hit = vm_mgr.continue_debug(token)
             if hit:

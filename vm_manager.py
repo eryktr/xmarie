@@ -33,7 +33,7 @@ class VmManager:
         program = api.parse_code(code)
         line_array = get_line_array(code)
         vm = self.vms[token]
-        vm.execute(program, line_array)
+        vm.execute(program, line_array, input_)
         return snapshot_maker.make_snapshot(vm)
 
     def debug(self, token: str, code: str, input_: str, breakpoints: List[int]) -> BreakpointHit:
@@ -43,7 +43,7 @@ class VmManager:
         parsed_breakpoints = api.parse_breakpoints(code, breakpoints)
         vm = self.vms[token]
         line_array = get_line_array(code)
-        vm.setup_debug(program, parsed_breakpoints, line_array)
+        vm.setup_debug(program, parsed_breakpoints, line_array, input_)
         return vm.hit_breakpoint()
 
     def continue_debug(self, token: str) -> Optional[BreakpointHit]:
