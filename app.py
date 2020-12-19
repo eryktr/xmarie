@@ -79,6 +79,6 @@ def run():
         else:
             snapshot = vm_mgr.run(token, code, input_)
 
-    except (ParsingError, SyntaxError) as err:
+    except (ParsingError, SyntaxError, RuntimeError) as err:
         return jsonify(statusCode=HTTPStatus.BAD_REQUEST, status='parsingError', message=str(err))
     return jsonify(statusCode=http.HTTPStatus.OK, snapshots=[serializer.serialize_snashot(snapshot)])

@@ -1,3 +1,3 @@
 flask==1.1.2
 flask-cors
-git+https://github.com/eryktr/xmarie-vm.git@1.9.6
+git+https://github.com/eryktr/xmarie-vm.git@1.9.9

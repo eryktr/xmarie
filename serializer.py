@@ -15,6 +15,10 @@ def serialize_snashot(snapshot: Snapshot):
     snapshot_dict['stack'] = [serialize_dec_num(n) for n in snapshot_dict['stack']]
     for field in dec_fields:
         snapshot_dict[field] = serialize_dec_num(snapshot_dict[field])
+    snapshot_dict['variables'] = {
+        name: serialize_dec_num(val)
+        for name, val in snapshot_dict['variables'].items()
+    }
     return snapshot_dict
 
 
