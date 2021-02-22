@@ -10,6 +10,9 @@ The web app is composed of four components.
 - **xmarie-vm** library (https://github.com/eryktr/xmarie-vm)
 - Automated testing system (https://github.com/eryktr/xmarie-ts)
 
+## Architecture overview
+A detailed **XMARIE** architecture overview can be found in the ![xmarie-vm](https://github.com/eryktr/xmarie-vm) repository.
+
 ## App overview
 ![outlook](https://user-images.githubusercontent.com/36778031/108757681-71ab1800-754a-11eb-8787-b90c3aab53a0.png)
 
